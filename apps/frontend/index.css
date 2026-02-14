@@ -1,0 +1,423 @@
+:root {
+    --bg-app: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f1f5f9;
+    --bg-input: #f1f5f9;
+    --bg-header: rgba(255, 255, 255, 0.85);
+    --bg-modal: #ffffff;
+    --bg-badge: #e2e8f0;
+    --bg-section: rgba(241, 245, 249, 0.5);
+    --bg-divider: #e2e8f0;
+
+    --brand-primary: #004085;
+    /* UVERS Deep Blue */
+    --brand-accent: #FFCC00;
+    /* UVERS Yellow */
+    --brand-vibrant: #FF4B4B;
+    /* UVERS Pink/Red */
+
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-tertiary: #94a3b8;
+    --text-label: #64748b;
+
+    --border-primary: #e2e8f0;
+    --border-input: #cbd5e1;
+    --border-card: #e2e8f0;
+
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+
+    --toggle-bg: #e2e8f0;
+    --toggle-hover: #cbd5e1;
+    --toggle-text: #64748b;
+    --toggle-text-hover: #1e293b;
+}
+
+[data-theme="dark"] {
+    --bg-app: #0f172a;
+    --bg-card: #1e293b;
+    --bg-card-hover: #334155;
+    --bg-input: #334155;
+    --bg-header: rgba(15, 23, 42, 0.85);
+    --bg-modal: #1e293b;
+    --bg-badge: #334155;
+    --bg-section: rgba(30, 41, 59, 0.5);
+    --bg-divider: #334155;
+
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-tertiary: #64748b;
+    --text-label: #94a3b8;
+
+    --border-primary: #334155;
+    --border-input: #475569;
+    --border-card: #334155;
+
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+
+    --toggle-bg: #334155;
+    --toggle-hover: #475569;
+    --toggle-text: #64748b;
+    --toggle-text-hover: #e2e8f0;
+}
+
+/* ── Global Overrides ── */
+[data-theme="dark"] body {
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+}
+
+/* ── Header ── */
+.header-bar {
+    background: var(--bg-header);
+    backdrop-filter: blur(12px);
+}
+
+.header-title {
+    color: var(--text-primary);
+}
+
+.user-pill {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+}
+
+.user-name {
+    color: var(--text-primary);
+}
+
+.user-role {
+    color: var(--text-tertiary);
+}
+
+.theme-toggle-btn {
+    color: var(--toggle-text);
+    background: transparent;
+}
+
+.theme-toggle-btn:hover {
+    color: var(--toggle-text-hover);
+    background: var(--toggle-bg);
+}
+
+/* ── Modal ── */
+.modal-content {
+    background: var(--bg-modal);
+}
+
+.modal-title {
+    color: var(--text-primary);
+}
+
+.label-text {
+    color: var(--text-label);
+}
+
+.input-field {
+    background: var(--bg-input);
+    border: 1px solid var(--border-input);
+    color: var(--text-primary);
+}
+
+.input-field::placeholder {
+    color: var(--text-tertiary);
+}
+
+.input-field:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+/* ── App Background ── */
+[data-theme="dark"] .min-h-screen.bg-slate-50,
+[data-theme="dark"] .min-h-screen {
+    background-color: var(--bg-app) !important;
+}
+
+/* ── Cards & Containers ── */
+[data-theme="dark"] .bg-white {
+    background-color: var(--bg-card) !important;
+}
+
+[data-theme="dark"] .bg-slate-50 {
+    background-color: var(--bg-app) !important;
+}
+
+[data-theme="dark"] .bg-slate-100 {
+    background-color: var(--bg-badge) !important;
+}
+
+[data-theme="dark"] .bg-slate-50\/50,
+[data-theme="dark"] .bg-slate-50\/30 {
+    background-color: var(--bg-section) !important;
+}
+
+/* ── Text Colors ── */
+[data-theme="dark"] .text-slate-800,
+[data-theme="dark"] .text-slate-900 {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .text-slate-700 {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .text-slate-600 {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .text-slate-500 {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .text-slate-400 {
+    color: #64748b !important;
+}
+
+[data-theme="dark"] .text-slate-300 {
+    color: #475569 !important;
+}
+
+/* ── Borders ── */
+[data-theme="dark"] .border-slate-100,
+[data-theme="dark"] .border-slate-50 {
+    border-color: var(--border-primary) !important;
+}
+
+[data-theme="dark"] .border-slate-200 {
+    border-color: var(--border-input) !important;
+}
+
+[data-theme="dark"] .divide-slate-50> :not([hidden])~ :not([hidden]) {
+    border-color: var(--border-primary) !important;
+}
+
+/* ── Inputs in dark mode ── */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-input) !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: var(--text-tertiary) !important;
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus,
+[data-theme="dark"] textarea:focus {
+    border-color: #7c3aed !important;
+}
+
+/* ── Login Page ── */
+[data-theme="dark"] .login-container {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%) !important;
+}
+
+/* ── Shadows ── */
+[data-theme="dark"] .shadow-sm {
+    box-shadow: var(--shadow-card) !important;
+}
+
+[data-theme="dark"] .shadow-lg,
+[data-theme="dark"] .shadow-xl,
+[data-theme="dark"] .shadow-2xl {
+    box-shadow: var(--shadow-xl) !important;
+}
+
+[data-theme="dark"] .shadow-violet-200,
+[data-theme="dark"] .shadow-violet-200\/50 {
+    --tw-shadow-color: rgba(30, 27, 75, 0.5) !important;
+}
+
+[data-theme="dark"] .shadow-teal-200 {
+    --tw-shadow-color: rgba(17, 94, 89, 0.3) !important;
+}
+
+/* ── Buttons in dark mode ── */
+[data-theme="dark"] .bg-slate-50.border.border-slate-200,
+[data-theme="dark"] button.bg-white {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-input) !important;
+    color: var(--text-secondary) !important;
+}
+
+/* ── QR Code background ── */
+[data-theme="dark"] .bg-white.rounded-2xl.p-3 {
+    background-color: #ffffff !important;
+}
+
+/* ── Charts ── */
+[data-theme="dark"] .recharts-cartesian-grid line {
+    stroke: #334155 !important;
+}
+
+[data-theme="dark"] .recharts-text {
+    fill: #94a3b8 !important;
+}
+
+[data-theme="dark"] .recharts-tooltip-wrapper .recharts-default-tooltip {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+}
+
+/* ── Scrollbar ── */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--border-input);
+    border-radius: 999px;
+}
+
+/* ── Hover states ── */
+[data-theme="dark"] .hover\:bg-slate-50:hover {
+    background-color: var(--bg-card-hover) !important;
+}
+
+[data-theme="dark"] .hover\:bg-slate-100:hover {
+    background-color: var(--bg-badge) !important;
+}
+
+[data-theme="dark"] .hover\:border-violet-100:hover {
+    border-color: #5b21b6 !important;
+}
+
+[data-theme="dark"] .hover\:border-violet-200:hover {
+    border-color: #6d28d9 !important;
+}
+
+[data-theme="dark"] .hover\:bg-violet-50:hover {
+    background-color: rgba(124, 58, 237, 0.15) !important;
+}
+
+/* ── Calendar cells ── */
+[data-theme="dark"] .aspect-square.bg-white {
+    background-color: var(--bg-card) !important;
+}
+
+/* ── Tab/toggle backgrounds ── */
+[data-theme="dark"] .bg-slate-100.p-1,
+[data-theme="dark"] .bg-slate-100.rounded-2xl {
+    background-color: var(--bg-badge) !important;
+}
+
+/* ── Focus rings ── */
+[data-theme="dark"] .focus\:ring-violet-100:focus,
+[data-theme="dark"] .focus\:ring-violet-200:focus {
+    --tw-ring-color: rgba(124, 58, 237, 0.2) !important;
+}
+
+/* ── Select option background ── */
+[data-theme="dark"] select option {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+}
+
+/* ── Status badge dark mode adjustments ── */
+[data-theme="dark"] .bg-emerald-50 {
+    background-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+[data-theme="dark"] .bg-amber-50 {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+[data-theme="dark"] .bg-rose-50 {
+    background-color: rgba(244, 63, 94, 0.15) !important;
+}
+
+[data-theme="dark"] .bg-violet-50 {
+    background-color: rgba(124, 58, 237, 0.15) !important;
+}
+
+[data-theme="dark"] .bg-teal-50 {
+    background-color: rgba(20, 184, 166, 0.15) !important;
+}
+
+[data-theme="dark"] .bg-indigo-50 {
+    background-color: rgba(99, 102, 241, 0.15) !important;
+}
+
+/* ── Employee Dashboard requirement cards ── */
+[data-theme="dark"] .bg-slate-50.border-slate-50 {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-card) !important;
+}
+
+[data-theme="dark"] .bg-slate-100.text-slate-400 {
+    background-color: var(--bg-badge) !important;
+}
+
+[data-theme="dark"] .shadow-violet-200\/40 {
+    --tw-shadow-color: rgba(30, 27, 75, 0.3) !important;
+}
+
+[data-theme="dark"] .bg-blue-50 {
+    background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+[data-theme="dark"] .bg-emerald-100 {
+    background-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+[data-theme="dark"] .bg-amber-100 {
+    background-color: rgba(245, 158, 11, 0.2) !important;
+}
+
+[data-theme="dark"] .bg-rose-100 {
+    background-color: rgba(244, 63, 94, 0.2) !important;
+}
+
+[data-theme="dark"] .bg-violet-100 {
+    background-color: rgba(124, 58, 237, 0.2) !important;
+}
+
+[data-theme="dark"] .bg-teal-100 {
+    background-color: rgba(20, 184, 166, 0.2) !important;
+}
+
+/* ── Border adjustments for status badges ── */
+[data-theme="dark"] .border-emerald-200 {
+    border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+[data-theme="dark"] .border-amber-200 {
+    border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+[data-theme="dark"] .border-rose-200 {
+    border-color: rgba(244, 63, 94, 0.3) !important;
+}
+
+[data-theme="dark"] .border-violet-200 {
+    border-color: rgba(124, 58, 237, 0.3) !important;
+}
+
+[data-theme="dark"] .border-teal-200 {
+    border-color: rgba(20, 184, 166, 0.3) !important;
+}
+
+/* ── Modals backdrop ── */
+[data-theme="dark"] .bg-slate-900\/60 {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+[data-theme="dark"] .bg-slate-900\/30 {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ── Dashed borders ── */
+[data-theme="dark"] .border-dashed {
+    border-color: var(--border-input) !important;
+}

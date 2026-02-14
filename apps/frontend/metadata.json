@@ -1,0 +1,9 @@
+{
+  "name": "UVERS STUDIO",
+  "description": "A comprehensive attendance management system with Admin, Supervisor, and Employee dashboards. Features location-based, WiFi-simulated, and dynamic QR code check-ins.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

@@ -1,0 +1,27 @@
+Connecting to MongoDB at: mongodb://localhost:27017/attendflow
+🧹 Starting background cleanup...
+🚀 Server running on port 5001
+✅ Connected to MongoDB
+✅ Cleanup completed.
+Client connected: go5KLuqjNRRmCg4HAAAB
+Client connected: fQV1DGgGWCQK7rloAAAD
+Client connected: hHTnL0Djzc8UORGpAAAF
+Client connected: eBH7PtFVV_OScw5pAAAH
+Client disconnected: go5KLuqjNRRmCg4HAAAB
+Client disconnected: eBH7PtFVV_OScw5pAAAH
+Client disconnected: hHTnL0Djzc8UORGpAAAF
+Client connected: ixHm-tCM-SACS81GAAAK
+Client connected: 8r3CZob4yN3_6AW9AAAL
+Client connected: 2tRPzux56SpYod0WAAAN
+🧹 Starting background cleanup...
+   - Cleared expired QR code for department: Design
+✅ Cleanup completed.
+🧹 Starting background cleanup...
+✅ Cleanup completed.
+🧹 Starting background cleanup...
+✅ Cleanup completed.
+🧹 Starting background cleanup...
+✅ Cleanup completed.
+Client disconnected: 8r3CZob4yN3_6AW9AAAL
+Client disconnected: ixHm-tCM-SACS81GAAAK
+Client disconnected: 2tRPzux56SpYod0WAAAN
