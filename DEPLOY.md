@@ -74,8 +74,8 @@ scp -r ./attendflow-ai user@your-server-ip:~/attendflow-ai
 Run using Docker Compose:
 
 ```bash
-# Build and start containers in the background
-sudo docker-compose up -d --build
+# Build and start containers in the background using the production config
+sudo docker-compose -f docker-compose.prod.yml up -d --build
 ```
 
 **Verify status:**

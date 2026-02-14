@@ -26,6 +26,17 @@ The backend is configured to listen on all network interfaces (`0.0.0.0`), allow
     ```
     You should see: `🚀 Server running on port 5001`
 
+## 1.5 Start in Production Mode (Docker)
+
+If you want to run the full production stack locally:
+
+```bash
+docker-compose -f docker-compose.prod.yml up -d --build
+```
+
+Access at `http://localhost:3000`.
+Default Admin: `uvers_admin` / `ProductionAccess2026`
+
 ## 2. Start the Frontend
 
 The frontend is now dynamic! It automatically detects whether you are accessing it via `localhost` or your network IP and points to the correct backend URL.

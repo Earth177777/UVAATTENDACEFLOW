@@ -267,17 +267,41 @@
 }
 
 /* ── Scrollbar ── */
-.custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+/* ── Global Scrollbar ── */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--border-input);
-    border-radius: 999px;
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    /* slate-300 */
+    border-radius: 99px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+    transition: background-color 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+    /* slate-400 */
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+
+/* Dark mode scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #334155;
+    /* slate-700 */
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+    /* slate-600 */
 }
 
 /* ── Hover states ── */

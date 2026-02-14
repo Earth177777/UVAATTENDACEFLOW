@@ -69,7 +69,7 @@ const Header: React.FC = () => {
           <div className="bg-white w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-900/10 transform -rotate-3 overflow-hidden">
             <img src="/xcxx.png" alt="UVERS Logo" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-xl font-black tracking-tight hidden md:block header-title text-[#004085]">UVERS <span className="opacity-50">STUDIO</span></h1>
+          <h1 className="text-lg md:text-xl font-black tracking-tight header-title text-[#004085]">UVERS <span className="font-light">STUDIO</span></h1>
         </div>
 
         <div className="flex items-center gap-2">

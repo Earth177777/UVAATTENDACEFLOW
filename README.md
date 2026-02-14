@@ -1,5 +1,5 @@
 
-# AttendFlow
+# UVA ATTENDANCE FLOW
 
 AttendFlow is a comprehensive, mobile-responsive attendance management system designed for modern workforces. It features role-based dashboards for Admins, Supervisors, and Employees, and supports multiple attendance verification methods including Geolocation, WiFi SSID verification, and Dynamic QR Codes.
 
@@ -38,10 +38,10 @@ AttendFlow is a comprehensive, mobile-responsive attendance management system de
 - Docker & Docker Compose
 - Node.js (for local dev)
 
-### 🐳 Run with Docker (Recommended)
+### 🐳 Run with Docker (Production Mode)
 1.  **Start Services**:
     ```bash
-    docker-compose up --build
+    docker-compose -f docker-compose.prod.yml up -d --build
     ```
 2.  **Access Application**:
     - Frontend: [http://localhost:3000](http://localhost:3000)

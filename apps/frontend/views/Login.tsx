@@ -108,9 +108,14 @@ const Login: React.FC = () => {
                     <p className="text-xs text-slate-400 font-medium mb-4">
                         Forgot credentials? Contact your administrator.
                     </p>
-                    <div className="border-t border-slate-100 pt-4">
+                    <div className="border-t border-slate-100 pt-4 space-y-2">
                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">UVERS STUDIO</p>
-                        <p className="text-[10px] text-slate-300 font-medium">Academy Management System</p>
+                        <p className="text-[10px] text-slate-400 font-medium">Produced by MITC (Maitreyawira Innovation Technology Club)</p>
+                        <p className="text-[9px] text-slate-300">Fully Right of Webtinous • All License under Webtinous</p>
+                        <div className="pt-2 text-[9px] text-slate-300 font-mono">
+                            Support: gilbert177777@gmail.com <br />
+                            +62 812-9292-4478
+                        </div>
                     </div>
                 </div>
             </div>
