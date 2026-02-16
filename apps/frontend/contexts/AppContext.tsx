@@ -167,7 +167,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       socket.off('settings_updated');
       socket.off('refresh_data');
     }
-  }, []);
+  }, [currentUser]);
 
   // Timer
   useEffect(() => {
