@@ -7,7 +7,9 @@ import { Users, QrCode as QrIcon, Clock, Scan, XCircle, CheckCircle2, AlertCircl
 import Button from '../components/Button';
 import AttendanceHistory from '../components/AttendanceHistory';
 import IDCard from '../components/IDCard';
+import IDCard from '../components/IDCard';
 import api from '../services/api';
+import QRScanner from '../components/QRScanner';
 
 // ── Requirement Card ──
 const RequirementCard = ({ icon, title, active, detail }: { icon: React.ReactNode, title: string, active: boolean, detail: string }) => (
@@ -64,10 +66,15 @@ const SupervisorDashboard: React.FC = () => {
             const interval = setInterval(() => {
                 const remaining = Math.max(0, Math.ceil((expiresAt - Date.now()) / 1000));
                 setTimeLeft(remaining);
+
+                // Auto-renew if expired
+                if (remaining === 0) {
+                    generateNewQr(activeDept);
+                }
             }, 1000);
             return () => clearInterval(interval);
         }
-    }, [myTeamQr]);
+    }, [myTeamQr, activeDept, generateNewQr]);
 
     // IP Check
     useEffect(() => {
@@ -169,18 +176,21 @@ const SupervisorDashboard: React.FC = () => {
         }
     };
 
-    const handleQrScan = () => {
+    const handleQrScan = (code?: string) => {
+        const inputToUse = code || scanInput;
+        if (!inputToUse) return;
+
         const now = Date.now();
-        const isGlobal = globalQrCode && scanInput === globalQrCode.code;
+        const isGlobal = globalQrCode && inputToUse === globalQrCode.code;
         if (isGlobal) {
             if (globalQrCode && now > globalQrCode.timestamp + globalQrCode.expiresIn) {
                 setStatusMsg({ type: 'error', text: 'Global QR Code has expired. Please wait for a new one.' });
                 return;
             }
-            handleAttendance('IN', AttendanceMethod.QR);
+            handleAttendance('IN', AttendanceMethod.QR, undefined); // undefined target dept for global
             return;
         }
-        const matchingDept = Object.keys(teamQrCodes).find(dept => teamQrCodes[dept].code === scanInput);
+        const matchingDept = Object.keys(teamQrCodes).find(dept => teamQrCodes[dept].code === inputToUse);
         if (matchingDept) {
             const qrData = teamQrCodes[matchingDept];
             if (now > qrData.timestamp + qrData.expiresIn) {
@@ -522,7 +532,7 @@ const SupervisorDashboard: React.FC = () => {
 
             {/* ── Scanner Modal ── */}
             {showScanner && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-xl" onClick={() => setShowScanner(false)}></div>
                     <div className="w-full max-w-sm bg-white rounded-[40px] shadow-2xl relative z-10 overflow-hidden flex flex-col items-center">
                         <div className="w-full pt-8 pb-4 text-center px-6">
@@ -537,14 +547,17 @@ const SupervisorDashboard: React.FC = () => {
                         </div>
 
                         <div className="w-full px-8 pb-8 space-y-6">
-                            <div className="aspect-square bg-slate-50 rounded-3xl overflow-hidden relative border-2 border-slate-100 group cursor-pointer" onClick={handleQrScan}>
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="w-48 h-48 border-2 border-violet-200 border-dashed rounded-2xl animate-pulse"></div>
-                                </div>
-                                <div className="absolute top-0 left-0 right-0 h-0.5 bg-violet-500 animate-scan shadow-[0_0_10px_#7C3AED]"></div>
-                                <div className="absolute inset-0 bg-slate-900/5 group-hover:bg-transparent transition-colors flex items-center justify-center">
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-white/80 px-4 py-2 rounded-full shadow-sm">Click to Simulate Scan</span>
-                                </div>
+                            <div className="w-full">
+                                <QRScanner
+                                    onScan={(code) => {
+                                        if (code) {
+                                            setScanInput(code);
+                                            handleQrScan(code);
+                                        }
+                                    }}
+                                    onError={(err) => console.log(err)}
+                                    onClose={() => setShowScanner(false)}
+                                />
                             </div>
 
                             <div className="relative">
@@ -556,7 +569,8 @@ const SupervisorDashboard: React.FC = () => {
                                     className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-mono font-bold text-left tracking-widest text-slate-700 outline-none focus:ring-2 focus:ring-violet-500/20"
                                 />
                                 <button
-                                    onClick={handleQrScan}
+                                    <button
+                                    onClick={() => handleQrScan(scanInput)}
                                     disabled={!scanInput}
                                     className="absolute right-2 top-2 bottom-2 px-4 bg-[#7C3AED] text-white rounded-xl font-bold text-xs uppercase disabled:opacity-50"
                                 >
