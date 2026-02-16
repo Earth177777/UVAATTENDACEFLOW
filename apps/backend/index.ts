@@ -28,6 +28,9 @@ app.use(helmet()); // Set security headers
 app.use(mongoSanitize()); // Prevent NoSQL injection
 app.use(hpp()); // Prevent HTTP Parameter Pollution
 
+// Trust Proxy (Required for Nginx & Rate Limiting)
+app.set('trust proxy', 1);
+
 // Rate Limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -39,7 +42,7 @@ const limiter = rateLimit({
 app.use('/api', limiter); // Apply to API routes
 
 // CORS Configuration
-const whitelist = process.env.CORS_WHITELIST ? process.env.CORS_WHITELIST.split(',') : ['http://localhost:3000', 'http://localhost:5173'];
+const whitelist = process.env.CORS_WHITELIST ? process.env.CORS_WHITELIST.split(',') : ['http://localhost:3000', 'http://localhost:5173', 'https://uva.uversstudio.com'];
 const corsOptions = {
     origin: function (origin: any, callback: any) {
         if (!origin || whitelist.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
