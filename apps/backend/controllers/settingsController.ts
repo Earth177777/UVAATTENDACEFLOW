@@ -4,7 +4,20 @@ import Attendance from '../models/Attendance';
 
 export const getSettings = async (req: Request, res: Response) => {
     try {
-        let settings = await Settings.findOne();
+        const count = await Settings.countDocuments();
+        if (count > 1) {
+            console.warn(`⚠️ Warning: Found ${count} settings documents. helping to clean up...`);
+            const allSettings = await Settings.find().sort({ updatedAt: -1 }); // Newest first
+            const [keep, ...remove] = allSettings;
+
+            for (const doc of remove) {
+                await Settings.findByIdAndDelete(doc._id);
+            }
+            console.log(`✅ Cleaned up ${remove.length} duplicate settings documents.`);
+            // Continue with 'keep'
+        }
+
+        let settings = await Settings.findOne().sort({ updatedAt: -1 });
         if (!settings) {
             // Create default if not exists
             settings = await Settings.create({
