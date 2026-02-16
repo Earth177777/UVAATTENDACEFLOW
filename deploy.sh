@@ -30,11 +30,11 @@ fi
 
 # 3. Update Containers (The "App" Layer)
 echo "🐳 Rebuilding Containers..."
-# Stop old containers to prevent port conflicts
-sudo docker compose down
+# Stop old containers to prevent port conflicts (using prod config)
+sudo docker compose -f docker-compose.prod.yml down
 
-# Rebuild with new env vars and code
-sudo docker compose up -d --build --remove-orphans
+# Rebuild with new env vars and code (using prod config)
+sudo docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
 
 # 4. Cleanup
 echo "🧹 Cleaning up..."
