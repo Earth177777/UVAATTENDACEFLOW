@@ -40,7 +40,8 @@ interface AppContextType {
   createManualRecord: (record: AttendanceRecord) => void;
   generateNewQr: (department?: string) => void;
   currentDate: Date;
-  addUser: (user: { name: string; role: Role; departments: string[] }) => void;
+  addUser: (user: { name: string; role: Role; departments: string[] }) => Promise<void>;
+  bulkAddUsers: (users: any[]) => Promise<{ success: boolean; message: string; count?: number }>;
   updateUser: (userId: string, data: Partial<User>) => void;
   renameDepartment: (oldName: string, newName: string) => void;
   removeUserFromDepartment: (userId: string, deptName: string) => void;
@@ -188,13 +189,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const res = await api.post('/auth/login', { userId, password });
       if (res.data.user) {
         setCurrentUser(res.data.user);
-        localStorage.setItem('currentUser', JSON.stringify(res.data.user)); // Simple persistence
+        localStorage.setItem('currentUser', JSON.stringify(res.data.user));
+        if (res.data.token) {
+          localStorage.setItem('token', res.data.token);
+        }
         return true;
       }
       return false;
     } catch (err: any) {
       console.error("Login failed", err);
-      // alert(err.response?.data?.message || 'Login failed'); // Better to return false and let UI handle alert
       return false;
     }
   };
@@ -202,6 +205,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('token');
   };
 
   const updateSettings = async (newSettings: AppSettings) => {
@@ -218,6 +222,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       await api.post('/users', userData);
     } catch (err) {
       console.error("Failed to create user", err);
+    }
+  };
+
+  const bulkAddUsers = async (usersData: any[]) => {
+    try {
+      const res = await api.post('/users/bulk', usersData);
+      return { success: true, message: res.data.message, count: res.data.count };
+    } catch (err: any) {
+      console.error("Failed to bulk create users", err);
+      return { success: false, message: err.response?.data?.message || 'Bulk import failed' };
     }
   };
 
@@ -353,7 +367,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   return (
-    <AppContext.Provider value={{ currentUser, users, records, settings, globalQrCode, teamQrCodes, login, logout, updateSettings, markAttendance, updateRecord, createManualRecord, generateNewQr, currentDate, addUser, updateUser, renameDepartment, removeUserFromDepartment, addUserToDepartment, deleteUser, deleteTeam, deleteRecord, deleteAllRecords, changePassword, requestPermissions, geoPermissionStatus }}>
+    <AppContext.Provider value={{ currentUser, users, records, settings, globalQrCode, teamQrCodes, login, logout, updateSettings, markAttendance, updateRecord, createManualRecord, generateNewQr, currentDate, addUser, bulkAddUsers, updateUser, renameDepartment, removeUserFromDepartment, addUserToDepartment, deleteUser, deleteTeam, deleteRecord, deleteAllRecords, changePassword, requestPermissions, geoPermissionStatus }}>
       {children}
     </AppContext.Provider>
   );

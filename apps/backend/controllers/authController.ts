@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import User from '../models/User';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_here';
@@ -37,9 +38,16 @@ export const login = async (req: Request, res: Response) => {
         const userObj = user.toJSON();
         delete (userObj as any).password;
 
+        // Sign Token
+        const token = jwt.sign(
+            { id: user._id, userId: user.userId, role: user.role },
+            JWT_SECRET,
+            { expiresIn: '1d' }
+        );
+
         res.json({
             user: userObj,
-            token: 'mock-jwt-token' // In real app, sign JWT here
+            token
         });
 
     } catch (error: any) {

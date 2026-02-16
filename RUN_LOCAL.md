@@ -1,6 +1,27 @@
-# Running AttendFlow Locally (Mac & Mobile)
+# MAFS - Local Development & Production Guide
 
-This guide explains how to run the AttendFlow application locally on your Mac and access it from your phone or other devices on the same network.
+This guide covers running the MAFS application locally for development and deploying it to production.
+
+## 🚀 Production Deployment
+
+1.  **Environment Variables**:
+    Create a `.env` file or set variables in your CI/CD pipeline:
+    -   `JWT_SECRET`: Strong random string (Required)
+    -   `INITIAL_ADMIN_PASSWORD`: Admin password for initial setup
+    -   `VITE_API_HOST`: Domain or IP of the server (e.g., `mafs.example.com` or `192.168.1.100`)
+
+2.  **Run with Docker Compose**:
+    ```bash
+    docker-compose -f docker-compose.prod.yml up -d --build
+    ```
+    -   Frontend: `http://localhost:3000` (or your domain)
+    -   Backend: `http://localhost:5001`
+
+3.  **Security**:
+    -   Ensure `JWT_SECRET` is set.
+    -   Run behind a reverse proxy (Nginx/Traefik) with SSL in a real production environment.
+
+## 🛠 Local Development
 
 ## Prerequisite
 

@@ -35,10 +35,18 @@ const MainLayout: React.FC = () => {
   );
 };
 
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import NotFound from './views/NotFound';
+
 function App() {
   return (
     <AppProvider>
-      <MainLayout />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainLayout />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
     </AppProvider>
   );
 }

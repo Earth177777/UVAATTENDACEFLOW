@@ -15,7 +15,7 @@ import api from '../services/api';
 const daysOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 const AdminDashboard: React.FC = () => {
-    const { settings, updateSettings, records, users, globalQrCode, generateNewQr, addUser, updateUser, renameDepartment, removeUserFromDepartment, addUserToDepartment, deleteUser, deleteTeam, deleteAllRecords, currentUser } = useApp();
+    const { settings, updateSettings, records, users, globalQrCode, generateNewQr, addUser, bulkAddUsers, updateUser, renameDepartment, removeUserFromDepartment, addUserToDepartment, deleteUser, deleteTeam, deleteAllRecords, currentUser } = useApp();
     const [timeLeft, setTimeLeft] = useState(10);
 
     // User Modal State (Add/Edit User)
@@ -25,6 +25,12 @@ const AdminDashboard: React.FC = () => {
     const [newDeptInput, setNewDeptInput] = useState('');
     const [deleteConfirmationUser, setDeleteConfirmationUser] = useState<User | null>(null);
     const [deleteConfirmationTeam, setDeleteConfirmationTeam] = useState<string | null>(null);
+
+    // Import Modal State
+    const [isImportModalOpen, setImportModalOpen] = useState(false);
+    const [importText, setImportText] = useState('');
+    const [importPreview, setImportPreview] = useState<any[]>([]);
+    const [isImporting, setIsImporting] = useState(false);
 
     // Location Modal State
     const [isLocationModalOpen, setLocationModalOpen] = useState(false);
@@ -460,6 +466,59 @@ const AdminDashboard: React.FC = () => {
                 addUser(userData);
             }
             setIsUserModalOpen(false);
+        }
+    };
+
+    const handleParseImport = () => {
+        const text = importText.trim();
+        if (!text) return;
+
+        let parsed: any[] = [];
+        try {
+            // Try JSON
+            if (text.startsWith('[') || text.startsWith('{')) {
+                const json = JSON.parse(text);
+                parsed = Array.isArray(json) ? json : [json];
+            } else {
+                // Try CSV
+                const lines = text.split('\n');
+                const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/^"|"$/g, ''));
+
+                parsed = lines.slice(1).filter(l => l.trim()).map(line => {
+                    // Primitive CSV split (doesn't handle commas in quotes perfectly but good enough for simple paste)
+                    const values = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+                    const obj: any = {};
+                    headers.forEach((h, i) => {
+                        if (values[i]) obj[h] = values[i];
+                    });
+
+                    // Remap common CSV headers
+                    if (obj.departments && typeof obj.departments === 'string') {
+                        obj.departments = obj.departments.split(';').map((d: string) => d.trim());
+                    }
+                    if (obj.user_id) obj.userId = obj.user_id; // common snake_case map
+
+                    return obj;
+                });
+            }
+            setImportPreview(parsed);
+        } catch (e) {
+            alert("Failed to parse data. Please ensure valid JSON or CSV format.");
+        }
+    };
+
+    const handleImportSubmit = async () => {
+        if (importPreview.length === 0) return;
+        setIsImporting(true);
+        const { success, message } = await bulkAddUsers(importPreview);
+        setIsImporting(false);
+        if (success) {
+            alert(message);
+            setImportModalOpen(false);
+            setImportText('');
+            setImportPreview([]);
+        } else {
+            alert('Import failed: ' + message);
         }
     };
 
@@ -1804,6 +1863,12 @@ const AdminDashboard: React.FC = () => {
                                 </div>
                                 <div className="flex gap-2 w-full sm:w-auto">
                                     <button
+                                        onClick={() => setImportModalOpen(true)}
+                                        className="flex-1 sm:flex-none px-4 py-3 bg-white border border-slate-200 text-slate-600 hover:text-slate-800 hover:border-slate-300 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
+                                    >
+                                        <Upload size={18} /> Import
+                                    </button>
+                                    <button
                                         onClick={() => handleDownload(`${api.defaults.baseURL}/export/users`)}
                                         className="flex-1 sm:flex-none px-4 py-3 bg-white border border-slate-200 text-slate-600 hover:text-slate-800 hover:border-slate-300 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
                                     >
@@ -2038,6 +2103,85 @@ const AdminDashboard: React.FC = () => {
             }
 
             {/* --- DELETE TEAM CONFIRMATION MODAL --- */}
+            {/* --- BULK IMPORT MODAL --- */}
+            {isImportModalOpen && (
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-all">
+                    <div className="bg-white rounded-[32px] p-6 sm:p-8 w-full max-w-2xl shadow-2xl animate-in fade-in zoom-in duration-200 border border-white/20 max-h-[90vh] overflow-y-auto flex flex-col">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                <div className="bg-blue-100 p-2 rounded-xl text-[#004085]"><Upload size={20} /></div>
+                                Import Users
+                            </h3>
+                            <button onClick={() => setImportModalOpen(false)} className="text-slate-400 hover:text-slate-600"><X size={20} /></button>
+                        </div>
+
+                        <div className="space-y-4 flex-1 overflow-auto">
+                            {!importPreview.length ? (
+                                <>
+                                    <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 text-sm text-[#004085]">
+                                        <p className="font-bold mb-1">Supported Formats:</p>
+                                        <ul className="list-disc pl-5 space-y-1">
+                                            <li><b>JSON:</b> Array of objects <code>[{`{"name": "John", "role": "EMPLOYEE"}`}, ...]</code></li>
+                                            <li><b>CSV:</b> Header row required <code>name,role,departments,userId</code></li>
+                                        </ul>
+                                    </div>
+                                    <textarea
+                                        className="w-full h-64 p-4 bg-slate-50 border border-slate-200 rounded-2xl font-mono text-xs focus:ring-4 focus:ring-blue-100 outline-none resize-none"
+                                        placeholder={`Paste JSON or CSV here...\n\nExample CSV:\nname,role,departments\nJohn Doe,EMPLOYEE,Sales\nJane Smith,SUPERVISOR,Engineering`}
+                                        value={importText}
+                                        onChange={e => setImportText(e.target.value)}
+                                    ></textarea>
+                                </>
+                            ) : (
+                                <div className="flex-1 overflow-auto border border-slate-200 rounded-2xl">
+                                    <table className="w-full text-left text-xs">
+                                        <thead className="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider sticky top-0">
+                                            <tr>
+                                                <th className="p-3">Name</th>
+                                                <th className="p-3">Role</th>
+                                                <th className="p-3">Depts</th>
+                                                <th className="p-3">ID</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100">
+                                            {importPreview.map((u, i) => (
+                                                <tr key={i} className="hover:bg-slate-50">
+                                                    <td className="p-3 font-medium text-slate-800">{u.name}</td>
+                                                    <td className="p-3 text-slate-500">{u.role}</td>
+                                                    <td className="p-3 text-slate-500">{Array.isArray(u.departments) ? u.departments.join(', ') : u.departments}</td>
+                                                    <td className="p-3 font-mono text-slate-400">{u.userId || <i>(auto)</i>}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="pt-6 flex gap-3 mt-auto">
+                            {importPreview.length > 0 && (
+                                <button
+                                    onClick={() => setImportPreview([])}
+                                    className="px-6 py-3 rounded-xl font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors"
+                                >
+                                    Back
+                                </button>
+                            )}
+                            <div className="flex-1"></div>
+                            {importPreview.length === 0 ? (
+                                <Button onClick={handleParseImport} disabled={!importText.trim()} className="px-8">
+                                    Preview Data
+                                </Button>
+                            ) : (
+                                <Button onClick={handleImportSubmit} disabled={isImporting} className="px-8 bg-green-600 hover:bg-green-700 shadow-green-200">
+                                    {isImporting ? 'Importing...' : `Import ${importPreview.length} Users`}
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {
                 deleteConfirmationTeam && (
                     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 transition-all">

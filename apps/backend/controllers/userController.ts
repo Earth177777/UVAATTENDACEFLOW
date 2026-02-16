@@ -59,6 +59,67 @@ export const createUser = async (req: Request, res: Response) => {
     }
 };
 
+export const bulkCreateUsers = async (req: Request, res: Response) => {
+    try {
+        const usersData = req.body; // Expecting array
+        if (!Array.isArray(usersData)) {
+            return res.status(400).json({ message: 'Input must be an array of user objects' });
+        }
+
+        const processedUsers = await Promise.all(usersData.map(async (userData: any) => {
+            if (!userData.name) return null; // Skip if no name
+
+            const hashedPassword = await bcrypt.hash(userData.password || '123456', 10);
+            const userId = (userData.userId || userData.name.toLowerCase().replace(/[^a-z0-9]/g, '')).toLowerCase();
+            const avatar = userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name)}&background=random&color=fff`;
+
+            // Basic role validation
+            const role = ['ADMIN', 'SUPERVISOR', 'EMPLOYEE'].includes(userData.role?.toUpperCase())
+                ? userData.role.toUpperCase()
+                : 'EMPLOYEE';
+
+            // Ensure departments is array
+            const departments = Array.isArray(userData.departments)
+                ? userData.departments
+                : (userData.departments ? [userData.departments] : []);
+
+            return {
+                ...userData,
+                password: hashedPassword,
+                userId,
+                avatar,
+                role,
+                departments
+            };
+        }));
+
+        const validUsers = processedUsers.filter(u => u !== null);
+
+        // Use ordered: false to continue if some fail (e.g. duplicate key)
+        // actually insertMany with ordered: false throws error but inserts the valid ones.
+        // But checking duplicates beforehand might be cleaner, or just letting Mongo handle it.
+        // For simplicity let's try insertMany. 
+
+        try {
+            const result = await User.insertMany(validUsers, { ordered: false });
+            req.app.get('io').emit('refresh_data');
+            res.status(201).json({ message: `Successfully imported ${result.length} users`, count: result.length });
+        } catch (err: any) {
+            // If some succeeded and some failed (duplicates), result is in err.insertedDocs (if mongoose version supports)
+            // simplified:
+            req.app.get('io').emit('refresh_data');
+            res.status(207).json({
+                message: 'Import completed with some errors (likely duplicate IDs)',
+                details: err.message,
+                inserted: err.insertedDocs?.length || 0
+            });
+        }
+
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export const updateUser = async (req: Request, res: Response) => {
     try {
         const updateData = { ...req.body };

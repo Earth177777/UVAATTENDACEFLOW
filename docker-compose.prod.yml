@@ -6,9 +6,9 @@ services:
       context: ./apps/backend
       target: production
     ports:
-      - "5001:5000"
+      - "5001:5001"
     environment:
-      - PORT=5000
+      - PORT=5001
       - MONGODB_URI=mongodb://mongo:27017/attendflow
       - JWT_SECRET=${JWT_SECRET:-production_secret_change_me}
       - INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}
