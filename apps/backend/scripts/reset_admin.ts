@@ -16,18 +16,22 @@ const resetAdminPassword = async () => {
 
         const adminId = 'uvers_admin';
         const newPassword = 'ProductionAccess2026';
-
-        const user = await User.findOne({ userId: adminId });
-        if (!user) {
-            console.log(`❌ User ${adminId} not found!`);
-            process.exit(1);
-        }
-
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-        user.password = hashedPassword;
-        await user.save();
 
-        console.log(`\n✅ Password for ${adminId} has been reset to: ${newPassword}`);
+        const user = await User.findOneAndUpdate(
+            { userId: adminId },
+            {
+                userId: adminId,
+                password: hashedPassword,
+                name: 'UVERS Academy Admin',
+                role: 'ADMIN',
+                departments: ['Management'],
+                avatar: 'https://ui-avatars.com/api/?name=U+A&background=004085&color=fff'
+            },
+            { upsert: true, new: true }
+        );
+
+        console.log(`\n✅ Admin user '${adminId}' is now active with password: ${newPassword}`);
 
         await mongoose.disconnect();
         process.exit(0);

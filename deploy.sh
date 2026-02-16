@@ -43,4 +43,7 @@ sudo docker image prune -f
 echo "=================================================="
 echo "✅ DEPLOYMENT COMPLETE!"
 echo "   Site: https://uva.uversstudio.com"
+echo "--------------------------------------------------"
+echo "💡 If you cannot login, run this to reset admin:"
+echo "   sudo docker compose exec backend npx ts-node scripts/reset_admin.ts"
 echo "=================================================="
