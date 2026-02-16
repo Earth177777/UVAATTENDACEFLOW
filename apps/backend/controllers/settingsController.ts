@@ -4,21 +4,12 @@ import Attendance from '../models/Attendance';
 
 export const getSettings = async (req: Request, res: Response) => {
     try {
-        const count = await Settings.countDocuments();
-        if (count > 1) {
-            console.warn(`⚠️ Warning: Found ${count} settings documents. helping to clean up...`);
-            const allSettings = await Settings.find().sort({ updatedAt: -1 }); // Newest first
-            const [keep, ...remove] = allSettings;
+        // Strict Singleton Logic
+        const allSettings = await Settings.find().sort({ updatedAt: -1 });
 
-            for (const doc of remove) {
-                await Settings.findByIdAndDelete(doc._id);
-            }
-            console.log(`✅ Cleaned up ${remove.length} duplicate settings documents.`);
-            // Continue with 'keep'
-        }
+        let settings;
 
-        let settings = await Settings.findOne().sort({ updatedAt: -1 });
-        if (!settings) {
+        if (allSettings.length === 0) {
             // Create default if not exists
             settings = await Settings.create({
                 schedule: {
@@ -37,6 +28,9 @@ export const getSettings = async (req: Request, res: Response) => {
                 qrGenerationConfig: { length: 8, prefix: '', includeNumbers: true, includeLetters: true }
             });
         } else {
+            // Keep the newest one
+            settings = allSettings[0];
+
             // Migration: convert legacy officeLocation → officeLocations[]
             if (settings.officeLocation && settings.officeLocation.lat && (!settings.officeLocations || settings.officeLocations.length === 0)) {
                 settings.officeLocations = [{
@@ -54,7 +48,14 @@ export const getSettings = async (req: Request, res: Response) => {
                 await settings.save();
             }
 
-            // Proactive Pruning: Check if QRs are expired before returning
+            // Clean up duplicates if any
+            if (allSettings.length > 1) {
+                const duplicates = allSettings.slice(1);
+                console.warn(`⚠️ Cleaning up ${duplicates.length} duplicate settings documents.`);
+                await Settings.deleteMany({ _id: { $in: duplicates.map(d => d._id) } });
+            }
+
+            // Check expirations
             const now = Date.now();
             let changed = false;
 
@@ -72,10 +73,9 @@ export const getSettings = async (req: Request, res: Response) => {
                 }
             }
 
-            if (changed) {
-                await settings.save();
-            }
+            if (changed) await settings.save();
         }
+
         res.json(settings);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
@@ -84,7 +84,17 @@ export const getSettings = async (req: Request, res: Response) => {
 
 export const updateSettings = async (req: Request, res: Response) => {
     try {
-        const settings = await Settings.findOneAndUpdate({}, req.body, { new: true, upsert: true });
+        // Ensure we update the ONE valid setting doc
+        let settings = await Settings.findOne().sort({ updatedAt: -1 });
+
+        if (!settings) {
+            // Fallback if somehow missing (should rarely happen if flow is correct)
+            settings = await Settings.create(req.body);
+        } else {
+            // Explicitly update by ID
+            settings = await Settings.findByIdAndUpdate(settings._id, req.body, { new: true });
+        }
+
         // Emit socket event
         req.app.get('io').emit('settings_updated', settings);
         res.json(settings);

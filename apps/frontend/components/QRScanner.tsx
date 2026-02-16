@@ -28,9 +28,14 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScan, onError, onClose }) => {
                     if (scannerRef.current.isScanning) {
                         await scannerRef.current.stop();
                     }
+                } catch (e) {
+                    console.warn("Scanner stop warning:", e);
+                }
+
+                try {
                     scannerRef.current.clear();
                 } catch (e) {
-                    console.error("Error clearing scanner", e);
+                    console.warn("Scanner clear warning:", e);
                 }
                 scannerRef.current = null;
             }
@@ -100,7 +105,18 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScan, onError, onClose }) => {
                     disableFlip: false,
                 },
                 (decodedText) => {
-                    onScan(decodedText);
+                    // Safe Stop mechanism
+                    if (scannerRef.current && scannerRef.current.isScanning) {
+                        scannerRef.current.stop().then(() => {
+                            scannerRef.current?.clear();
+                            onScan(decodedText);
+                        }).catch(err => {
+                            console.warn("Error stopping scanner", err);
+                            onScan(decodedText); // Proceed anyway
+                        });
+                    } else {
+                        onScan(decodedText);
+                    }
                 },
                 (errorMessage) => {
                     // ignore errors for now

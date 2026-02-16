@@ -250,7 +250,8 @@ export const markAttendance = async (req: Request, res: Response) => {
                 const openRecord = await Attendance.findOne({ userId, date: todayStr, department: dept, checkOutTime: null });
                 if (openRecord) {
                     openRecord.checkOutTime = now;
-                    openRecord.status = Status.CHECKED_OUT;
+                    // Keep original status (PRESENT/LATE) to preserve history
+                    // openRecord.status = Status.CHECKED_OUT; 
                     await openRecord.save();
                     newRecords.push(openRecord);
                 }
