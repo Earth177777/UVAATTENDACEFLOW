@@ -7,6 +7,8 @@ services:
       target: dev
     ports:
       - "5001:5000"
+    env_file:
+      - .env
     environment:
       - PORT=5000
       - MONGODB_URI=mongodb://mongo:27017/attendflow
@@ -15,6 +17,7 @@ services:
       - /app/node_modules
     depends_on:
       - mongo
+    restart: always
 
   frontend:
     build:
@@ -22,11 +25,14 @@ services:
       target: dev
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     volumes:
       - ./apps/frontend:/app
       - /app/node_modules
     depends_on:
       - backend
+    restart: always
 
   mongo:
     image: mongo:latest
@@ -34,6 +40,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    restart: always
 
 volumes:
   mongo-data:

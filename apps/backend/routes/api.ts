@@ -36,6 +36,11 @@ router.put('/records/:id', authenticate, authorize(['ADMIN']), AttendanceControl
 router.delete('/records/all', authenticate, authorize(['ADMIN']), AttendanceController.deleteAllRecords);
 router.delete('/records/:id', authenticate, authorize(['ADMIN']), AttendanceController.deleteRecord);
 
+// Health Check
+router.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // Network Check Route (for admin to verify access)
 router.get('/network-check', (req, res) => {
     const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown';
