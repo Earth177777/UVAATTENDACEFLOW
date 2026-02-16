@@ -354,7 +354,7 @@ const EmployeeDashboard: React.FC = () => {
 
             {/* ── Scanner Modal ── */}
             {showScanner && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-xl" onClick={() => setShowScanner(false)}></div>
                     <div className="w-full max-w-sm bg-white rounded-[40px] shadow-2xl relative z-10 overflow-hidden flex flex-col items-center">
                         <div className="w-full pt-8 pb-4 text-center px-6">

@@ -22,8 +22,7 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScan, onError, onClose }) => {
     useEffect(() => {
         let mounted = true;
 
-        const initScanner = async () => {
-            // Cleanup any existing instance first
+        const cleanupScanner = async () => {
             if (scannerRef.current) {
                 try {
                     if (scannerRef.current.isScanning) {
@@ -35,6 +34,10 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScan, onError, onClose }) => {
                 }
                 scannerRef.current = null;
             }
+        };
+
+        const initScanner = async () => {
+            await cleanupScanner();
 
             // Create new instance
             try {
@@ -70,17 +73,12 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScan, onError, onClose }) => {
         };
 
         // Small delay to ensure DOM is ready
-        const timer = setTimeout(initScanner, 100);
+        const timer = setTimeout(initScanner, 300);
 
         return () => {
             mounted = false;
             clearTimeout(timer);
-            if (scannerRef.current) {
-                if (scannerRef.current.isScanning) {
-                    scannerRef.current.stop().catch(err => console.error("Failed to stop scanner on unmount", err));
-                }
-                scannerRef.current.clear();
-            }
+            cleanupScanner();
         };
     }, []);
 
@@ -206,8 +204,8 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScan, onError, onClose }) => {
                     <button
                         onClick={toggleFlash}
                         className={`w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all active:scale-95 ${isFlashOn
-                                ? 'bg-yellow-400 text-yellow-900 shadow-[0_0_15px_rgba(250,204,21,0.5)]'
-                                : 'bg-white/10 text-white hover:bg-white/20'
+                            ? 'bg-yellow-400 text-yellow-900 shadow-[0_0_15px_rgba(250,204,21,0.5)]'
+                            : 'bg-white/10 text-white hover:bg-white/20'
                             }`}
                     >
                         {isFlashOn ? <Zap size={20} fill="currentColor" /> : <ZapOff size={20} />}
