@@ -30,7 +30,7 @@ api.interceptors.response.use(
             if (!window.location.pathname.includes('/login')) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('currentUser');
-                window.location.href = '/login';
+                window.location.href = '/';
             }
         }
         return Promise.reject(error);

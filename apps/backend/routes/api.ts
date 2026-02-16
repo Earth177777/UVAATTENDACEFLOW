@@ -24,7 +24,7 @@ router.put('/departments/rename', authenticate, authorize(['ADMIN']), UserContro
 // Settings Routes
 router.get('/settings', SettingsController.getSettings); // Often needed for login page logic (e.g. is QR required?)
 router.put('/settings', authenticate, authorize(['ADMIN']), SettingsController.updateSettings);
-router.post('/settings/refresh-qr', authenticate, authorize(['ADMIN']), SettingsController.refreshQrCode);
+router.post('/settings/refresh-qr', authenticate, authorize(['ADMIN', 'SUPERVISOR']), SettingsController.refreshQrCode);
 
 // Attendance Routes
 router.get('/records', authenticate, authorize(['ADMIN', 'SUPERVISOR']), AttendanceController.getRecords);

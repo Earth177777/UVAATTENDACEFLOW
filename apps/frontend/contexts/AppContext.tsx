@@ -117,6 +117,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   // Initial Fetch & Socket Setup
   useEffect(() => {
     const fetchData = async () => {
+      // Don't fetch if not logged in
+      if (!localStorage.getItem('token')) return;
+
       try {
         const [usersRes, settingsRes, recordsRes] = await Promise.all([
           api.get('/users'),
