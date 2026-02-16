@@ -569,7 +569,6 @@ const SupervisorDashboard: React.FC = () => {
                                     className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-mono font-bold text-left tracking-widest text-slate-700 outline-none focus:ring-2 focus:ring-violet-500/20"
                                 />
                                 <button
-                                    <button
                                     onClick={() => handleQrScan(scanInput)}
                                     disabled={!scanInput}
                                     className="absolute right-2 top-2 bottom-2 px-4 bg-[#7C3AED] text-white rounded-xl font-bold text-xs uppercase disabled:opacity-50"
