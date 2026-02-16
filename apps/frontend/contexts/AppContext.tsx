@@ -145,7 +145,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     });
 
     socket.on('settings_updated', (updatedSettings: AppSettings) => {
-      setSettings(updatedSettings);
+      setSettings(prev => ({ ...prev, ...updatedSettings }));
       if (updatedSettings.globalQrCode) setGlobalQrCode(updatedSettings.globalQrCode);
       if (updatedSettings.teamQrCodes) setTeamQrCodes(updatedSettings.teamQrCodes);
     });
