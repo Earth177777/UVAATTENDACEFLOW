@@ -114,26 +114,26 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const fetchData = async () => {
+    // Don't fetch if not logged in
+    if (!localStorage.getItem('token')) return;
+
+    try {
+      const [usersRes, settingsRes, recordsRes] = await Promise.all([
+        api.get('/users'),
+        api.get('/settings'),
+        api.get('/records')
+      ]);
+      setUsers(usersRes.data);
+      setSettings(settingsRes.data);
+      setRecords(recordsRes.data);
+    } catch (err) {
+      console.error("Failed to fetch initial data:", err);
+    }
+  };
+
   // Initial Fetch & Socket Setup
   useEffect(() => {
-    const fetchData = async () => {
-      // Don't fetch if not logged in
-      if (!localStorage.getItem('token')) return;
-
-      try {
-        const [usersRes, settingsRes, recordsRes] = await Promise.all([
-          api.get('/users'),
-          api.get('/settings'),
-          api.get('/records')
-        ]);
-        setUsers(usersRes.data);
-        setSettings(settingsRes.data);
-        setRecords(recordsRes.data);
-      } catch (err) {
-        console.error("Failed to fetch initial data:", err);
-      }
-    };
-
     fetchData();
 
     socket.on('records_updated', (newRecords: AttendanceRecord[]) => {
@@ -196,6 +196,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         if (res.data.token) {
           localStorage.setItem('token', res.data.token);
         }
+        await fetchData(); // Fetch real data immediately after login
         return true;
       }
       return false;

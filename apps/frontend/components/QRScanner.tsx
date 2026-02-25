@@ -49,7 +49,7 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScan, onError, onClose }) => {
                 scannerRef.current = new Html5Qrcode(scannerId, {
                     verbose: false,
                     experimentalFeatures: {
-                        useBarCodeDetectorIfSupported: true
+                        useBarCodeDetectorIfSupported: false
                     }
                 });
             } catch (err) {

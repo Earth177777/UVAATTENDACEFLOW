@@ -7,7 +7,6 @@ import { Users, QrCode as QrIcon, Clock, Scan, XCircle, CheckCircle2, AlertCircl
 import Button from '../components/Button';
 import AttendanceHistory from '../components/AttendanceHistory';
 import IDCard from '../components/IDCard';
-import IDCard from '../components/IDCard';
 import api from '../services/api';
 import QRScanner from '../components/QRScanner';
 
