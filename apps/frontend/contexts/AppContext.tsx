@@ -119,16 +119,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (!localStorage.getItem('token')) return;
 
     try {
-      const [usersRes, settingsRes, recordsRes] = await Promise.all([
+      const [usersRes, settingsRes] = await Promise.all([
         api.get('/users'),
-        api.get('/settings'),
-        api.get('/records')
+        api.get('/settings')
       ]);
       setUsers(usersRes.data);
       setSettings(settingsRes.data);
+    } catch (err) {
+      console.error("Failed to fetch initial settings/users:", err);
+    }
+
+    try {
+      const recordsRes = await api.get('/records');
       setRecords(recordsRes.data);
     } catch (err) {
-      console.error("Failed to fetch initial data:", err);
+      console.warn("Could not fetch records initial data:", err);
     }
   };
 

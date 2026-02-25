@@ -27,7 +27,7 @@ router.put('/settings', authenticate, authorize(['ADMIN']), SettingsController.u
 router.post('/settings/refresh-qr', authenticate, authorize(['ADMIN', 'SUPERVISOR']), SettingsController.refreshQrCode);
 
 // Attendance Routes
-router.get('/records', authenticate, authorize(['ADMIN', 'SUPERVISOR']), AttendanceController.getRecords);
+router.get('/records', authenticate, AttendanceController.getRecords);
 router.get('/export/attendance', authenticate, authorize(['ADMIN']), AttendanceController.exportAttendance);
 router.post('/attendance', authenticate, AttendanceController.markAttendance); // Must be logged in
 router.post('/records', authenticate, authorize(['ADMIN']), AttendanceController.createManualRecord);

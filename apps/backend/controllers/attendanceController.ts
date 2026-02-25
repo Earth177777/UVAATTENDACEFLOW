@@ -43,7 +43,12 @@ export const exportAttendance = async (req: Request, res: Response) => {
 
 export const getRecords = async (req: Request, res: Response) => {
     try {
-        const records = await Attendance.find().sort({ createdAt: -1 }).limit(100);
+        let query = {};
+        const user = (req as any).user;
+        if (user && user.role === 'EMPLOYEE') {
+            query = { userId: user.id };
+        }
+        const records = await Attendance.find(query).sort({ createdAt: -1 }).limit(100);
         res.json(records);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
